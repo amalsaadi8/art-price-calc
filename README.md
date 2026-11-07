@@ -4,7 +4,9 @@ A pricing calculator for **Arabic calligraphy on paper (framed)** and **oil, acr
 
 ## Use it
 
-Open `index.html` in any browser. You can also host the folder anywhere static, such as GitHub Pages (Settings → Pages → deploy from branch).
+Open `index.html` in any browser, or use the hosted version on GitHub Pages: **https://amalsaadi8.github.io/art-price-calc/**
+
+The `.github/workflows/pages.yml` workflow runs the tests and publishes the site on every push. To turn it on once, go to **Settings → Pages → Build and deployment → Source: GitHub Actions**. (Pages on a private repository needs a paid GitHub plan; on a free plan, make the repository public first.)
 
 ## What it accounts for
 
