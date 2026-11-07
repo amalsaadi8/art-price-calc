@@ -34,7 +34,18 @@ price           = (net [+ delivery if free shipping]) / (1 − commission − fe
 
 Commission and fees are *grossed up*, so after the gallery takes its cut you still get your full costs plus profit. The summary shows the cost breakdown, where every part of the price goes, profit margin, **effective hourly earnings**, and price per cm². It warns you if a price loses money or pays you below your hourly rate.
 
-You can also save pieces, print a quote, copy a text summary, and export or import your saved pieces as JSON.
+## Branded quotations: PDF and Excel
+
+In **9 · Brand & quotation**, enter the client's name. Open **Your brand** once to upload your logo and set your studio name, tagline, main and accent colours, contact details, and the notes and terms printed on every quote. You can also apply your logo and colours to the app itself. Brand settings are saved in your browser and reused for every piece.
+
+- **⬇ PDF quote**: an A4 client quotation with your logo and colours, quote number, date, validity, artwork description (medium, size, framing), subtotal, VAT, delivery and total. It's rendered by the browser itself, so Arabic text joins correctly. If a browser can't render it directly, the print dialog opens instead so you can choose "Save as PDF". There's an optional internal cost-breakdown section.
+- **⬇ Excel**: a workbook with two sheets. **Quotation** is the client-facing, branded sheet with live formulas for VAT and totals. **Cost breakdown** is your internal sheet listing every material, labour, frame, packaging and overhead line, plus commission, fees, profit, margin and effective hourly rate. Arabic workbooks open in right-to-left view.
+
+Quote numbers are assigned automatically (`Q-2026-1001`, `Q-2026-1002`, …) and can be edited.
+
+You can also save pieces, print the summary, copy a text summary, and export or import your saved pieces as JSON.
+
+Defaults are AED and 5% VAT. You can change both in the app.
 
 ## Development
 
@@ -42,4 +53,4 @@ You can also save pieces, print a quote, copy a text summary, and export or impo
 npm test
 ```
 
-The pricing engine (`calc.js`) is pure JavaScript and covered by Node's built-in test runner (`test/calc.test.js`). The UI is in `index.html`, `app.js` and `styles.css`, and the strings and material presets are in `i18n.js`.
+The pricing engine (`calc.js`) is pure JavaScript and covered by Node's built-in test runner (`test/calc.test.js`). The UI is in `index.html`, `app.js` and `styles.css`, the strings and material presets are in `i18n.js`, and branding and PDF/Excel export are in `quote.js`. `vendor/` holds [jsPDF](https://github.com/parallax/jsPDF) 2.5.2 and [ExcelJS](https://github.com/exceljs/exceljs) 4.4.0 (both MIT). They're loaded only when you export, so the site has no CDN dependency.

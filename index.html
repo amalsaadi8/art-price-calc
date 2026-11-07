@@ -11,9 +11,9 @@
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true">✒</span>
+      <span class="brand-mark" id="brandMark" aria-hidden="true">✒</span>
       <div>
-        <h1 data-i18n="appTitle">Artwork Price Calculator</h1>
+        <h1 id="appName" data-i18n="appTitle">Artwork Price Calculator</h1>
         <p class="sub" data-i18n="appSub">Calligraphy & paintings — materials, frame, packaging, delivery</p>
       </div>
     </div>
@@ -21,7 +21,7 @@
       <label class="compact">
         <span data-i18n="currency">Currency</span>
         <select id="currency">
-          <option>SAR</option><option>AED</option><option>KWD</option><option>QAR</option>
+          <option>AED</option><option>SAR</option><option>KWD</option><option>QAR</option>
           <option>BHD</option><option>OMR</option><option>EGP</option><option>USD</option>
           <option>EUR</option><option>GBP</option>
         </select>
@@ -223,6 +223,54 @@
           </label>
         </div>
       </section>
+      <!-- 9. Brand & quotation -->
+      <section class="card">
+        <h2><span class="step">9</span><span data-i18n="secBrand">Brand & quotation</span></h2>
+        <div class="grid">
+          <label class="span2"><span data-i18n="client">Client name</span>
+            <input type="text" data-k="client" data-i18n-ph="clientPh" placeholder="Who is this quote for?">
+          </label>
+          <label><span data-i18n="quoteNo">Quotation no.</span>
+            <input type="text" data-k="quoteNo" data-i18n-ph="quoteNoPh" placeholder="Auto">
+          </label>
+          <label><span data-i18n="validDays">Valid for (days)</span>
+            <input type="number" min="1" step="1" data-b="validDays">
+          </label>
+        </div>
+        <details class="brand-box" id="brandBox">
+          <summary data-i18n="brandSettings">Your brand (logo, name, colours, contact)</summary>
+          <div class="grid">
+            <div class="span2 logo-row">
+              <div class="logo-preview" id="logoPreview" aria-hidden="true"></div>
+              <div class="row">
+                <label class="btn small"><span data-i18n="uploadLogo">Upload logo</span><input type="file" id="logoFile" accept="image/*" hidden></label>
+                <button type="button" class="btn small ghost" id="logoRemove" data-i18n="removeLogo">Remove</button>
+              </div>
+            </div>
+            <label><span data-i18n="brandName">Brand / studio name</span>
+              <input type="text" data-b="name" data-i18n-ph="brandNamePh" placeholder="e.g. Al Saadi Art">
+            </label>
+            <label><span data-i18n="tagline">Tagline</span>
+              <input type="text" data-b="tagline" data-i18n-ph="taglinePh" placeholder="Arabic calligraphy & fine art">
+            </label>
+            <label><span data-i18n="primaryColor">Main colour</span>
+              <div class="color"><input type="color" data-b="primary"><code data-code="primary"></code></div>
+            </label>
+            <label><span data-i18n="accentColor">Accent colour</span>
+              <div class="color"><input type="color" data-b="accent"><code data-code="accent"></code></div>
+            </label>
+            <label class="checkline span2"><input type="checkbox" data-b="applyToApp"><span data-i18n="applyToApp">Use my logo and colours in this app too</span></label>
+            <label><span data-i18n="phone">Phone / WhatsApp</span><input type="text" data-b="phone" dir="ltr"></label>
+            <label><span data-i18n="email">Email</span><input type="text" data-b="email" dir="ltr"></label>
+            <label><span data-i18n="website">Website</span><input type="text" data-b="website" dir="ltr"></label>
+            <label><span data-i18n="instagram">Instagram</span><input type="text" data-b="instagram" dir="ltr"></label>
+            <label class="span2"><span data-i18n="terms">Notes & terms on the quote</span>
+              <textarea rows="3" data-b="terms" data-i18n-ph="termsPh"></textarea>
+            </label>
+            <label class="checkline span2"><input type="checkbox" data-b="pdfBreakdown"><span data-i18n="pdfBreakdown">Include my internal cost breakdown in the PDF</span></label>
+          </div>
+        </details>
+      </section>
       <div class="card saved no-print">
         <h3 data-i18n="savedPieces">Saved pieces</h3>
         <ul id="savedList" class="saved-list"></ul>
@@ -255,7 +303,9 @@
         <div class="kpis" id="kpis"></div>
         <div class="row actions no-print">
           <button type="button" class="btn primary" id="saveBtn" data-i18n="save">Save piece</button>
-          <button type="button" class="btn" id="printBtn" data-i18n="print">Print quote</button>
+          <button type="button" class="btn" id="pdfBtn" data-i18n="pdf">⬇ PDF quote</button>
+          <button type="button" class="btn" id="xlsxBtn" data-i18n="excel">⬇ Excel</button>
+          <button type="button" class="btn" id="printBtn" data-i18n="print">Print</button>
           <button type="button" class="btn" id="copyBtn" data-i18n="copy">Copy summary</button>
           <button type="button" class="btn ghost" id="resetBtn" data-i18n="reset">New</button>
         </div>
@@ -269,5 +319,6 @@
   <script src="calc.js"></script>
   <script src="i18n.js"></script>
   <script src="app.js"></script>
+  <script src="quote.js"></script>
 </body>
 </html>

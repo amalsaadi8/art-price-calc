@@ -11,7 +11,7 @@
   const clone = (o) => JSON.parse(JSON.stringify(o));
 
   let lang = store.get('artcalc.lang', 'en');
-  let currency = store.get('artcalc.currency', 'SAR');
+  let currency = store.get('artcalc.currency', 'AED');
   const t = (k) => (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k;
 
   function presetItems(list) {
@@ -31,7 +31,7 @@
 
   function defaults() {
     return {
-      name: '', medium: 'calligraphy', support: 'paper', width: 50, height: 70,
+      name: '', client: '', quoteNo: '', medium: 'calligraphy', support: 'paper', width: 50, height: 70,
       materials: materialsFor('calligraphy', 'paper'),
       hours: 10, hourlyRate: 50, overhead: 20,
       framed: true,
@@ -44,7 +44,7 @@
       shippingMode: 'separate', deliveryCost: 35, insurancePct: 1,
       method: 'higher', markupPct: 50, sizeMode: 'area', sizeRate: 0.25, complexity: 1,
       minimumPrice: 0,
-      commissionPct: 0, paymentFeePct: 2.5, vatPct: 15, roundTo: 10,
+      commissionPct: 0, paymentFeePct: 2.5, vatPct: 5, roundTo: 10,
     };
   }
 
@@ -303,7 +303,8 @@
 
     $('#currency').addEventListener('change', (e) => { currency = e.target.value; store.set('artcalc.currency', currency); writeForm(); update(); renderSaved(); });
     $('#langToggle').addEventListener('click', () => { lang = lang === 'en' ? 'ar' : 'en'; store.set('artcalc.lang', lang);
-      translateItems(state.materials); translateItems(state.packaging); applyLang(); update(); });
+      translateItems(state.materials); translateItems(state.packaging); applyLang();
+      window.ArtApp.onLang.forEach((fn) => fn()); update(); });
 
     $('#saveBtn').addEventListener('click', (e) => {
       const list = store.get(savedKey, []);
@@ -346,6 +347,17 @@
       e.target.value = '';
     });
   }
+
+  // Small API for quote.js (brand + PDF/Excel export).
+  window.ArtApp = {
+    get state() { return state; },
+    get lang() { return lang; },
+    get currency() { return currency; },
+    t, money, n2,
+    result: () => ArtCalc.calculate(state),
+    setField(k, v) { setPath(state, k, v); writeForm(); update(); },
+    onLang: [],
+  };
 
   init();
 })();
