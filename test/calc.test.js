@@ -76,3 +76,18 @@ test('invalid when deductions reach 100%', () => {
   const r = calculate({ ...base, commissionPct: 60, paymentFeePct: 40 });
   assert.ok(r.invalid);
 });
+
+test('quantity: per-piece costs scale, delivery is per order', () => {
+  const one = calculate(base);
+  const r = calculate({ ...base, quantity: 3, vatPct: 5 });
+  assert.equal(r.quantity, 3);
+  close(r.price, one.price);
+  close(r.subtotal, one.price * 3);
+  close(r.vat, r.subtotal * 0.05);
+  close(r.buyerTotal, r.subtotal * 1.05 + 30 * 1.05);
+  close(r.profit, 545 * 0.5 * 3);
+  // free shipping spreads one delivery over all pieces
+  const inc = calculate({ ...base, quantity: 3, shippingMode: 'included' });
+  close(inc.subtotal - inc.deliveryCost, 545 * 1.5 * 3, 0.03);
+  assert.equal(calculate({ ...base, quantity: 0 }).quantity, 1);
+});

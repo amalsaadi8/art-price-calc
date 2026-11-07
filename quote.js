@@ -169,7 +169,7 @@
     const m = (v) => `<bdi dir="ltr">${esc(A.money(v))}</bdi>`;
     const font = q.rtl ? "'Noto Kufi Arabic', 'Inter', sans-serif" : "'Inter', 'Noto Kufi Arabic', sans-serif";
     const trow = (label, val, strong) => `<tr${strong ? ' class="grand"' : ''}><td>${label}</td><td>${val}</td></tr>`;
-    let totals = trow(t('qSubtotal'), m(r.price));
+    let totals = trow(t('qSubtotal'), m(r.subtotal));
     if (st.vatPct > 0) totals += trow(`${t('qVat')} (${A.n2(+st.vatPct)}%)`, m(r.vat));
     if (q.shipping > 0) totals += trow(t('qShipping'), m(q.shipping));
     totals += trow(t('qTotal'), m(r.buyerTotal), true);
@@ -179,8 +179,9 @@
       const rows = [
         [t('cMaterials'), r.materials], [t('cLabor'), r.labor], [t('cFrame'), r.frame.total],
         [t('cPackaging'), r.packaging], [t('cOverhead'), r.overhead], [t('cTotal'), r.productionCost],
+        ...(r.quantity > 1 ? [[`${t('orderCost')} (×${r.quantity})`, r.orderCost]] : []),
         [t('sCommission'), r.commission], [t('sFees'), r.paymentFee], [t('sProfit'), r.profit],
-      ].filter(([, v], i) => v || i === 5 || i === 8);
+      ].filter(([l, v]) => v || l === t('cTotal') || l === t('sProfit'));
       internal = `<div class="qd-internal"><h3>${t('qInternal')}</h3><table>${rows.map(([a, b]) => `<tr><td>${a}</td><td>${m(b)}</td></tr>`).join('')}
         <tr><td>${t('kMargin')}</td><td>${A.n2(r.marginPct)}%</td></tr></table></div>`;
     }
@@ -204,7 +205,7 @@
   .qd-meta .val{font-size:15px;font-weight:600}
   .qd-items{width:100%;border-collapse:collapse;margin-bottom:20px}
   .qd-items th{background:${P};color:${ink};font-weight:600;padding:10px 14px;text-align:start;font-size:12px}
-  .qd-items th:last-child,.qd-items td:last-child{text-align:end;white-space:nowrap}
+  .qd-items th:nth-child(n+3),.qd-items td:nth-child(n+3){text-align:end;white-space:nowrap}
   .qd-items th:nth-child(2),.qd-items td:nth-child(2){text-align:center;width:60px}
   .qd-items td{padding:16px 14px;border-bottom:1px solid #e6ddcf;vertical-align:top}
   .qd-items .t{font-size:16px;font-weight:700;margin-bottom:4px}
@@ -239,8 +240,8 @@
       <div><div class="lbl">${t('qValid')}</div><div class="val">${q.valid}</div></div>
     </div>
     <table class="qd-items">
-      <tr><th>${t('qDesc')}</th><th>${t('qQty')}</th><th>${t('qAmount')}</th></tr>
-      <tr><td><div class="t" dir="auto">${esc(q.title)}</div><div class="d">${q.lines.map((l) => esc(l).replace(/([\d.,]+ × [\d.,]+ cm)/g, '<bdi dir="ltr">$1</bdi>')).join('<br>')}</div></td><td>1</td><td>${m(r.price)}</td></tr>
+      <tr><th>${t('qDesc')}</th><th>${t('qQty')}</th><th>${t('qUnit')}</th><th>${t('qAmount')}</th></tr>
+      <tr><td><div class="t" dir="auto">${esc(q.title)}</div><div class="d">${q.lines.map((l) => esc(l).replace(/([\d.,]+ × [\d.,]+ cm)/g, '<bdi dir="ltr">$1</bdi>')).join('<br>')}</div></td><td>${r.quantity}</td><td>${m(r.price)}</td><td><strong>${m(r.subtotal)}</strong></td></tr>
     </table>
     <table class="qd-totals">${totals}</table>
     ${st.shippingMode === 'included' ? `<div class="qd-ship">✓ ${t('qShipIncluded')}</div>` : ''}
@@ -366,10 +367,10 @@
       views: [{ rightToLeft: q.rtl, showGridLines: false }],
       pageSetup: { paperSize: 9, orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0, margins: { left: 0.4, right: 0.4, top: 0.5, bottom: 0.5, header: 0.3, footer: 0.3 } },
     });
-    ws.columns = [{ width: 18 }, { width: 46 }, { width: 8 }, { width: 20 }];
+    ws.columns = [{ width: 16 }, { width: 40 }, { width: 8 }, { width: 17 }, { width: 19 }];
     for (let i = 1; i <= 5; i++) {
       ws.getRow(i).height = i === 5 ? 6 : 22;
-      for (let c = 1; c <= 4; c++) ws.getCell(i, c).fill = fill(i === 5 ? ACC : P);
+      for (let c = 1; c <= 5; c++) ws.getCell(i, c).fill = fill(i === 5 ? ACC : P);
     }
     if (brand.logo) {
       const [w, h] = await imgSize(brand.logo);
@@ -381,8 +382,8 @@
     hc('B2', brand.name || '', { size: 18, bold: true }).alignment = { horizontal: align };
     hc('B3', brand.tagline || '', { size: 11 }).alignment = { horizontal: align };
     // Column A is the "start" side in both directions (Excel mirrors columns in RTL view).
-    hc('D2', t('qTitle'), { size: 16, bold: true }).alignment = { horizontal: endAlign };
-    hc('D3', `${t('qNo')} ${st.quoteNo}`, { size: 11 }).alignment = { horizontal: endAlign };
+    hc('E2', t('qTitle'), { size: 16, bold: true }).alignment = { horizontal: endAlign };
+    hc('E3', `${t('qNo')} ${st.quoteNo}`, { size: 11 }).alignment = { horizontal: endAlign };
 
     let row = 7;
     [[t('qBillTo'), st.client || '—'], [t('qDate'), q.today], [t('qValid'), q.valid]].forEach(([k, v]) => {
@@ -393,52 +394,54 @@
     row++;
     // items header
     ws.mergeCells(row, 1, row, 2);
-    [[1, t('qDesc')], [3, t('qQty')], [4, t('qAmount')]].forEach(([c, v]) => {
+    [[1, t('qDesc')], [3, t('qQty')], [4, t('qUnit')], [5, t('qAmount')]].forEach(([c, v]) => {
       const cell = ws.getCell(row, c); cell.value = v; cell.font = { bold: true, color: { argb: INK } };
-      cell.alignment = { horizontal: c === 3 ? 'center' : c === 4 ? endAlign : align, vertical: 'middle' };
+      cell.alignment = { horizontal: c === 3 ? 'center' : c >= 4 ? endAlign : align, vertical: 'middle' };
     });
-    for (let c = 1; c <= 4; c++) ws.getCell(row, c).fill = fill(P);
+    for (let c = 1; c <= 5; c++) ws.getCell(row, c).fill = fill(P);
     ws.getRow(row).height = 24;
     row++;
     ws.mergeCells(row, 1, row, 2);
     const desc = ws.getCell(row, 1);
     desc.value = { richText: [{ text: q.title + '\n', font: { bold: true, size: 13 } }, { text: q.lines.join('\n'), font: { size: 10, color: { argb: 'FF5C5246' } } }] };
     desc.alignment = { wrapText: true, vertical: 'top', horizontal: align };
-    ws.getCell(row, 3).value = 1; ws.getCell(row, 3).alignment = { horizontal: 'center', vertical: 'top' };
-    const amt = ws.getCell(row, 4); amt.value = r.price; amt.numFmt = fmt; amt.alignment = { horizontal: endAlign, vertical: 'top' };
+    ws.getCell(row, 3).value = r.quantity; ws.getCell(row, 3).alignment = { horizontal: 'center', vertical: 'top' };
+    const unit = ws.getCell(row, 4); unit.value = r.price; unit.numFmt = fmt; unit.alignment = { horizontal: endAlign, vertical: 'top' };
+    const amt = ws.getCell(row, 5); amt.value = { formula: `C${row}*D${row}`, result: r.subtotal }; amt.numFmt = fmt;
+    amt.alignment = { horizontal: endAlign, vertical: 'top' }; amt.font = { bold: true };
     ws.getRow(row).height = 18 * (q.lines.length + 1) + 8;
-    for (let c = 1; c <= 4; c++) ws.getCell(row, c).border = { bottom: { style: 'thin', color: { argb: 'FFE6DDCF' } } };
+    for (let c = 1; c <= 5; c++) ws.getCell(row, c).border = { bottom: { style: 'thin', color: { argb: 'FFE6DDCF' } } };
     const itemRow = row;
     row += 2;
 
     const totalRow = (label, value, grand) => {
-      ws.mergeCells(row, 2, row, 3);
+      ws.mergeCells(row, 2, row, 4);
       const l = ws.getCell(row, 2); l.value = label; l.alignment = { horizontal: endAlign };
-      const v = ws.getCell(row, 4); v.value = value; v.numFmt = fmt; v.alignment = { horizontal: endAlign };
+      const v = ws.getCell(row, 5); v.value = value; v.numFmt = fmt; v.alignment = { horizontal: endAlign };
       v.font = { bold: true };
       if (grand) {
         [l, v].forEach((c) => { c.fill = fill(P); c.font = { bold: true, size: 13, color: { argb: INK } }; });
-        ws.getCell(row, 3).fill = fill(P); ws.getRow(row).height = 24;
+        ws.getCell(row, 3).fill = fill(P); ws.getCell(row, 4).fill = fill(P); ws.getRow(row).height = 24;
       }
       return row++;
     };
-    const subRow = totalRow(t('qSubtotal'), { formula: `D${itemRow}`, result: r.price });
-    const parts = [`D${subRow}`];
-    if (st.vatPct > 0) parts.push(`D${totalRow(`${t('qVat')} (${A.n2(+st.vatPct)}%)`, { formula: `D${subRow}*${(+st.vatPct) / 100}`, result: r.vat })}`);
-    if (q.shipping > 0) parts.push(`D${totalRow(t('qShipping'), q.shipping)}`);
+    const subRow = totalRow(t('qSubtotal'), { formula: `E${itemRow}`, result: r.subtotal });
+    const parts = [`E${subRow}`];
+    if (st.vatPct > 0) parts.push(`E${totalRow(`${t('qVat')} (${A.n2(+st.vatPct)}%)`, { formula: `E${subRow}*${(+st.vatPct) / 100}`, result: r.vat })}`);
+    if (q.shipping > 0) parts.push(`E${totalRow(t('qShipping'), q.shipping)}`);
     totalRow(t('qTotal'), { formula: parts.join('+'), result: r.buyerTotal }, true);
-    if (st.shippingMode === 'included') { ws.getCell(row, 4).value = '✓ ' + t('qShipIncluded'); ws.getCell(row, 4).alignment = { horizontal: endAlign }; ws.getCell(row, 4).font = { size: 10, color: { argb: 'FF7A6F62' } }; row++; }
+    if (st.shippingMode === 'included') { ws.getCell(row, 5).value = '✓ ' + t('qShipIncluded'); ws.getCell(row, 5).alignment = { horizontal: endAlign }; ws.getCell(row, 5).font = { size: 10, color: { argb: 'FF7A6F62' } }; row++; }
     row++;
 
     if (brand.terms) {
       const h = ws.getCell(row, 1); h.value = t('qNotes'); h.font = { bold: true, color: { argb: P }, size: 10 }; row++;
-      ws.mergeCells(row, 1, row, 4);
+      ws.mergeCells(row, 1, row, 5);
       const n = ws.getCell(row, 1); n.value = brand.terms; n.alignment = { wrapText: true, vertical: 'top', horizontal: align };
       n.fill = fill(TINT); n.border = { [q.rtl ? 'right' : 'left']: { style: 'thick', color: { argb: ACC } } };
       ws.getRow(row).height = Math.max(30, 16 * Math.ceil(brand.terms.length / 85) + 10);
       row += 2;
     }
-    ws.mergeCells(row, 1, row, 4);
+    ws.mergeCells(row, 1, row, 5);
     const f = ws.getCell(row, 1);
     f.value = [q.contact.join('   ·   '), t('qThanks')].filter(Boolean).join('\n');
     f.font = { size: 10, color: { argb: P } }; f.alignment = { wrapText: true, horizontal: 'center' };
@@ -481,9 +484,14 @@
       if (isMoney) rr.getCell(5).numFmt = fmt;
       if (bold) rr.font = { bold: true };
     };
+    if (r.quantity > 1) {
+      kv(t('quantity'), r.quantity, false);
+      kv(t('orderCost'), r.orderCost, true, true);
+    }
     kv(t('mCostPlus'), r.methods.costPlus);
     kv(t('mSize'), r.methods.sizeBased);
-    kv(t('qSubtotal'), r.price, true, true);
+    kv(t('qUnit'), r.price);
+    kv(t('qSubtotal'), r.subtotal, true, true);
     if (r.commission) kv(`${t('sCommission')} (${A.n2(+st.commissionPct)}%)`, r.commission);
     if (r.paymentFee) kv(`${t('sFees')} (${A.n2(+st.paymentFeePct)}%)`, r.paymentFee);
     if (r.deliveryBorneByArtist) kv(t('sDelivery'), r.deliveryBorneByArtist);

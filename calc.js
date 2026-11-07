@@ -94,40 +94,46 @@
     const deliveryCost = num(i.deliveryCost);
     const shippingIncluded = i.shippingMode === 'included';
 
+    // Quantity: copies of the same piece. Per-piece costs scale; delivery is one shipment per order.
+    const quantity = Math.max(1, Math.round(num(i.quantity, 1)));
+
     // When shipping is included, delivery + insurance (a % of price) come out of the price.
     const deductions = c + f + (shippingIncluded ? ins : 0);
     const invalid = deductions >= 1;
     const rawPrice = invalid
       ? NaN
-      : (net + (shippingIncluded ? deliveryCost : 0)) / (1 - deductions);
+      : (net + (shippingIncluded ? deliveryCost / quantity : 0)) / (1 - deductions);
 
-    const price = invalid ? NaN : roundUp(rawPrice, i.roundTo); // pre-tax artwork price
-    const insurance = price * ins;
-    const commission = price * c;
-    const paymentFee = price * f;
+    const price = invalid ? NaN : roundUp(rawPrice, i.roundTo); // pre-tax price per piece
+    const subtotal = price * quantity;                            // pre-tax order value
+    const insurance = subtotal * ins;
+    const commission = subtotal * c;
+    const paymentFee = subtotal * f;
 
     const vatRate = pct(i.vatPct);
-    const vat = price * vatRate;
-    const priceWithVat = price + vat;
+    const vat = subtotal * vatRate;
+    const priceWithVat = price * (1 + vatRate);                   // per piece
+    const subtotalWithVat = subtotal + vat;
 
     const shippingCharge = shippingIncluded ? 0 : deliveryCost + insurance;
     const shippingVat = shippingCharge * vatRate;
-    const buyerTotal = priceWithVat + shippingCharge + shippingVat;
+    const buyerTotal = subtotalWithVat + shippingCharge + shippingVat;
 
     const deliveryBorneByArtist = shippingIncluded ? deliveryCost + insurance : 0;
-    const profit = price - commission - paymentFee - productionCost - deliveryBorneByArtist;
-    const takeHome = profit + labor; // what you earn for your time + profit
-    const hours = num(i.hours);
+    const orderCost = productionCost * quantity;
+    const profit = subtotal - commission - paymentFee - orderCost - deliveryBorneByArtist;
+    const hours = num(i.hours) * quantity;
+    const takeHome = profit + labor * quantity; // what you earn for your time + profit
 
     return {
-      width: w, height: h, areaCm2,
-      materials, labor, frame, packaging, overhead, productionCost,
+      width: w, height: h, areaCm2, quantity,
+      materials, labor, frame, packaging, overhead, productionCost, orderCost,
       methods: { costPlus, sizeBased, sizeArtValue, chosen: net, raisedToMinimum },
-      price, rawPrice, commission, paymentFee, insurance,
-      vat, priceWithVat, shippingCharge, shippingVat, buyerTotal,
+      price, rawPrice, subtotal, commission, paymentFee, insurance,
+      vat, priceWithVat, subtotalWithVat, shippingCharge, shippingVat, buyerTotal,
       deliveryCost, deliveryBorneByArtist,
       profit,
-      marginPct: price > 0 ? (profit / price) * 100 : 0,
+      marginPct: subtotal > 0 ? (profit / subtotal) * 100 : 0,
       effectiveHourly: hours > 0 ? takeHome / hours : null,
       pricePerCm2: areaCm2 > 0 ? price / areaCm2 : null,
       invalid,

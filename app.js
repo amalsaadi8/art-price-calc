@@ -31,7 +31,7 @@
 
   function defaults() {
     return {
-      name: '', client: '', quoteNo: '', medium: 'calligraphy', support: 'paper', width: 50, height: 70,
+      name: '', client: '', quoteNo: '', quantity: 1, medium: 'calligraphy', support: 'paper', width: 50, height: 70,
       materials: materialsFor('calligraphy', 'paper'),
       hours: 10, hourlyRate: 50, overhead: 20,
       framed: true,
@@ -171,6 +171,7 @@
     $('#outPrice').textContent = money(state.vatPct > 0 ? r.priceWithVat : r.price);
     const sub = [];
     if (state.vatPct > 0) sub.push(`${money(r.price)} ${t('exVat')} · ${money(r.priceWithVat)} ${t('inclVat')}`);
+    if (r.quantity > 1) sub.push(`${t('perPiece')} · ${t('orderTotal')} ×${r.quantity}: <strong>${money(state.vatPct > 0 ? r.subtotalWithVat : r.subtotal)}</strong>`);
     if (r.shippingCharge > 0) sub.push(`${t('plusShipping')} ${money(r.shippingCharge + r.shippingVat)} → ${t('buyerPays')} <strong>${money(r.buyerTotal)}</strong>`);
     $('#outPriceSub').innerHTML = sub.join('<br>');
 
@@ -197,7 +198,7 @@
     $('#splitTable').innerHTML = r.invalid ? '' :
       (r.commission ? row(t('sCommission'), money(r.commission)) : '') +
       (r.paymentFee ? row(t('sFees'), money(r.paymentFee)) : '') +
-      row(t('sCosts'), money(r.productionCost)) +
+      row(r.quantity > 1 ? `${t('sCosts')} (×${r.quantity})` : t('sCosts'), money(r.orderCost)) +
       (r.deliveryBorneByArtist ? row(t('sDelivery'), money(r.deliveryBorneByArtist)) : '') +
       row(t('sProfit'), money(r.profit), 'total ' + (r.profit < 0 ? 'neg' : 'pos'));
 
@@ -260,7 +261,8 @@
       `${t('cPackaging')}: ${money(r.packaging)}`,
       `${t('cOverhead')}: ${money(r.overhead)}`,
       `${t('cTotal')}: ${money(r.productionCost)}`,
-      `${t('suggestedPrice')}: ${money(r.price)} ${t('exVat')}${state.vatPct > 0 ? ` / ${money(r.priceWithVat)} ${t('inclVat')}` : ''}`,
+      `${t('suggestedPrice')}: ${money(r.price)} ${t('exVat')}${state.vatPct > 0 ? ` / ${money(r.priceWithVat)} ${t('inclVat')}` : ''}${r.quantity > 1 ? ` (${t('perPiece')})` : ''}`,
+      r.quantity > 1 ? `${t('orderTotal')} ×${r.quantity}: ${money(r.subtotal)} ${t('exVat')}${state.vatPct > 0 ? ` / ${money(r.subtotalWithVat)} ${t('inclVat')}` : ''}` : null,
       r.shippingCharge > 0 ? `${t('kShipping')}: ${money(r.shippingCharge + r.shippingVat)} → ${t('buyerPays')}: ${money(r.buyerTotal)}` : null,
       `${t('sProfit')}: ${money(r.profit)} (${n2(r.marginPct)}%)`,
     ];

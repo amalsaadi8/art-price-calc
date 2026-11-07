@@ -12,7 +12,7 @@ The `.github/workflows/pages.yml` workflow runs the tests and publishes the site
 
 | Section | Inputs |
 |---|---|
-| Artwork | Type (calligraphy / oil / acrylic / watercolour), surface (paper / canvas / panel), width × height in cm |
+| Artwork | Type (calligraphy / oil / acrylic / watercolour), surface (paper / canvas / panel), width × height in cm, **quantity** (copies of the same piece) |
 | Consumables | Editable line items (qty × unit cost), with presets per medium: ink, qalam wear, gold leaf, ahar, paints, gesso, varnish, canvas, paper… |
 | Your time | Hours × hourly rate, plus a studio-overhead share per piece |
 | Frame | A framer's quote, **or** calculated from size: moulding per metre (with mitre and waste allowance), glass / acrylic / museum glazing per m², mat (passe-partout) per m², backing, fitting. Shows the final framed size |
@@ -40,6 +40,8 @@ In **9 · Brand & quotation**, enter the client's name. Open **Your brand** once
 
 - **⬇ PDF quote**: an A4 client quotation with your logo and colours, quote number, date, validity, artwork description (medium, size, framing), subtotal, VAT, delivery and total. It's rendered by the browser itself, so Arabic text joins correctly. If a browser can't render it directly, the print dialog opens instead so you can choose "Save as PDF". There's an optional internal cost-breakdown section.
 - **⬇ Excel**: a workbook with two sheets. **Quotation** is the client-facing, branded sheet with live formulas for VAT and totals. **Cost breakdown** is your internal sheet listing every material, labour, frame, packaging and overhead line, plus commission, fees, profit, margin and effective hourly rate. Arabic workbooks open in right-to-left view.
+
+**Quantity:** materials, time, frame and packaging are counted per piece, and delivery is one shipment for the whole order (with free shipping, it's spread across the pieces). The quote shows quantity × unit price, and the Excel amount is a live `qty × unit price` formula.
 
 Quote numbers are assigned automatically (`Q-2026-1001`, `Q-2026-1002`, …) and can be edited.
 
