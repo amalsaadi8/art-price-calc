@@ -14,6 +14,9 @@
   let currency = store.get('artcalc.currency', 'AED');
   const t = (k) => (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k;
 
+  // Piece name in the current language, falling back to the other one.
+  const pieceName = (st) => (lang === 'ar' ? st.nameAr || st.name : st.name || st.nameAr) || t('untitled');
+
   function presetItems(list) {
     return list.map((p) => ({ name: p[lang] || p.en, qty: p.qty, cost: p.cost }));
   }
@@ -31,7 +34,7 @@
 
   function defaults() {
     return {
-      name: '', client: '', quoteNo: '', quantity: 1, medium: 'calligraphy', support: 'paper', width: 50, height: 70,
+      name: '', nameAr: '', client: '', quoteNo: '', quantity: 1, medium: 'calligraphy', support: 'paper', width: 50, height: 70,
       materials: materialsFor('calligraphy', 'paper'),
       hours: 10, hourlyRate: 50, overhead: 20,
       framed: true,
@@ -137,6 +140,7 @@
     document.title = t('appTitle');
     $$('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
     $$('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+    $$('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
     $('#langToggle').textContent = t('langBtn');
     renderList('materials');
     renderList('packaging');
@@ -167,7 +171,7 @@
     }
 
     // headline
-    $('#printMeta').textContent = `${state.name || t('untitled')} — ${n2(r.width)} × ${n2(r.height)} cm`;
+    $('#printMeta').textContent = `${pieceName(state)} — ${n2(r.width)} × ${n2(r.height)} cm`;
     $('#outPrice').textContent = money(state.vatPct > 0 ? r.priceWithVat : r.price);
     const sub = [];
     if (state.vatPct > 0) sub.push(`${money(r.price)} ${t('exVat')} · ${money(r.priceWithVat)} ${t('inclVat')}`);
@@ -236,7 +240,7 @@
       li.innerHTML = `<div><strong></strong><small>${n2(p.state.width)}×${n2(p.state.height)} cm · ${money(p.state.vatPct > 0 ? r.priceWithVat : r.price)}</small></div>
         <span><button type="button" class="btn small" data-a="load">${t('load')}</button>
         <button type="button" class="btn small ghost" data-a="del">${t('del')}</button></span>`;
-      $('strong', li).textContent = p.state.name || t('untitled');
+      $('strong', li).textContent = pieceName(p.state);
       li.addEventListener('click', (e) => {
         const a = e.target.dataset.a;
         if (a === 'load') { state = Object.assign(defaults(), clone(p.state)); writeForm(); update(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -254,7 +258,7 @@
   function summaryText() {
     const r = ArtCalc.calculate(state);
     const lines = [
-      `${state.name || t('untitled')} — ${n2(state.width)} × ${n2(state.height)} cm`,
+      `${pieceName(state)} — ${n2(state.width)} × ${n2(state.height)} cm`,
       `${t('cMaterials')}: ${money(r.materials)}`,
       `${t('cLabor')}: ${money(r.labor)} (${n2(state.hours)} h × ${money(+state.hourlyRate || 0)})`,
       state.framed ? `${t('cFrame')}: ${money(r.frame.total)}` : null,
@@ -310,7 +314,8 @@
 
     $('#saveBtn').addEventListener('click', (e) => {
       const list = store.get(savedKey, []);
-      const existing = list.find((p) => p.state.name && p.state.name === state.name);
+      const key = (st) => (st.name || '') + '|' + (st.nameAr || '');
+      const existing = list.find((p) => (p.state.name || p.state.nameAr) && key(p.state) === key(state));
       if (existing) { existing.state = clone(state); existing.date = Date.now(); }
       else list.push({ id: Date.now().toString(36), date: Date.now(), state: clone(state) });
       store.set(savedKey, list); renderSaved(); flash(e.target, t('savedOk'));

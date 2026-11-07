@@ -12,7 +12,7 @@ The `.github/workflows/pages.yml` workflow runs the tests and publishes the site
 
 | Section | Inputs |
 |---|---|
-| Artwork | Type (calligraphy / oil / acrylic / watercolour), surface (paper / canvas / panel), width × height in cm, **quantity** (copies of the same piece) |
+| Artwork | Piece name in **English and Arabic**, type (calligraphy / oil / acrylic / watercolour), surface (paper / canvas / panel), width × height in cm, **quantity** (copies of the same piece) |
 | Consumables | Editable line items (qty × unit cost), with presets per medium: ink, qalam wear, gold leaf, ahar, paints, gesso, varnish, canvas, paper… |
 | Your time | Hours × hourly rate, plus a studio-overhead share per piece |
 | Frame | A framer's quote, **or** calculated from size: moulding per metre (with mitre and waste allowance), glass / acrylic / museum glazing per m², mat (passe-partout) per m², backing, fitting. Shows the final framed size |
@@ -36,7 +36,16 @@ Commission and fees are *grossed up*, so after the gallery takes its cut you sti
 
 ## Branded quotations: PDF and Excel
 
-In **9 · Brand & quotation**, enter the client's name. Open **Your brand** once to upload your logo and set your studio name, tagline, main and accent colours, contact details, and the notes and terms printed on every quote. You can also apply your logo and colours to the app itself. Brand settings are saved in your browser and reused for every piece.
+In **9 · Brand & quotation**, enter the client's name, then open **🎨 Design your quote**. The quote designer shows a live A4 preview next to these settings:
+
+- **Brand:** logo, studio name, tagline.
+- **Layout:** three templates (*Banner*, *Minimal*, *Elegant*), quote language (same as the app, English, Arabic, or **bilingual** English + Arabic labels), a custom document title (e.g. "Proforma invoice"), logo size, white box behind the logo, corner rounding and text size.
+- **Colours:** main, accent, page and text colours, plus the text colour on coloured areas (automatic contrast or your own).
+- **Fonts:** heading and body fonts from 14 Google Fonts, including Arabic ones (Cairo, Tajawal, Almarai, Amiri, Noto Naskh, Reem Kufi, El Messiri, Aref Ruqaa…).
+- **Show on the quote:** client name, tagline, valid-until date, notes and terms, contact details, thank-you line (with your own text), and your internal cost breakdown.
+- **Contact and terms**, and an option to use your logo and colours in the app itself.
+
+The quote shows the piece name in its language. A bilingual quote shows both names. Design settings are saved in your browser and reused for every piece.
 
 - **⬇ PDF quote**: an A4 client quotation with your logo and colours, quote number, date, validity, artwork description (medium, size, framing), subtotal, VAT, delivery and total. It's rendered by the browser itself, so Arabic text joins correctly. If a browser can't render it directly, the print dialog opens instead so you can choose "Save as PDF". There's an optional internal cost-breakdown section.
 - **⬇ Excel**: a workbook with two sheets. **Quotation** is the client-facing, branded sheet with live formulas for VAT and totals. **Cost breakdown** is your internal sheet listing every material, labour, frame, packaging and overhead line, plus commission, fees, profit, margin and effective hourly rate. Arabic workbooks open in right-to-left view.

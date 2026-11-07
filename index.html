@@ -37,8 +37,11 @@
       <section class="card">
         <h2><span class="step">1</span><span data-i18n="secArtwork">Artwork</span></h2>
         <div class="grid">
-          <label class="span2"><span data-i18n="pieceName">Piece name</span>
-            <input type="text" data-k="name" data-i18n-ph="pieceNamePh" placeholder="e.g. Bismillah — Thuluth">
+          <label><span data-i18n="pieceNameEn">Piece name (English)</span>
+            <input type="text" data-k="name" dir="ltr" placeholder="e.g. Bismillah — Thuluth">
+          </label>
+          <label><span data-i18n="pieceNameAr">Piece name (Arabic)</span>
+            <input type="text" data-k="nameAr" dir="rtl" lang="ar" placeholder="مثال: البسملة — خط الثلث">
           </label>
           <label><span data-i18n="medium">Type / medium</span>
             <select data-k="medium" id="medium">
@@ -241,39 +244,8 @@
             <input type="number" min="1" step="1" data-b="validDays">
           </label>
         </div>
-        <details class="brand-box" id="brandBox">
-          <summary data-i18n="brandSettings">Your brand (logo, name, colours, contact)</summary>
-          <div class="grid">
-            <div class="span2 logo-row">
-              <div class="logo-preview" id="logoPreview" aria-hidden="true"></div>
-              <div class="row">
-                <label class="btn small"><span data-i18n="uploadLogo">Upload logo</span><input type="file" id="logoFile" accept="image/*" hidden></label>
-                <button type="button" class="btn small ghost" id="logoRemove" data-i18n="removeLogo">Remove</button>
-              </div>
-            </div>
-            <label><span data-i18n="brandName">Brand / studio name</span>
-              <input type="text" data-b="name" data-i18n-ph="brandNamePh" placeholder="e.g. Al Saadi Art">
-            </label>
-            <label><span data-i18n="tagline">Tagline</span>
-              <input type="text" data-b="tagline" data-i18n-ph="taglinePh" placeholder="Arabic calligraphy & fine art">
-            </label>
-            <label><span data-i18n="primaryColor">Main colour</span>
-              <div class="color"><input type="color" data-b="primary"><code data-code="primary"></code></div>
-            </label>
-            <label><span data-i18n="accentColor">Accent colour</span>
-              <div class="color"><input type="color" data-b="accent"><code data-code="accent"></code></div>
-            </label>
-            <label class="checkline span2"><input type="checkbox" data-b="applyToApp"><span data-i18n="applyToApp">Use my logo and colours in this app too</span></label>
-            <label><span data-i18n="phone">Phone / WhatsApp</span><input type="text" data-b="phone" dir="ltr"></label>
-            <label><span data-i18n="email">Email</span><input type="text" data-b="email" dir="ltr"></label>
-            <label><span data-i18n="website">Website</span><input type="text" data-b="website" dir="ltr"></label>
-            <label><span data-i18n="instagram">Instagram</span><input type="text" data-b="instagram" dir="ltr"></label>
-            <label class="span2"><span data-i18n="terms">Notes & terms on the quote</span>
-              <textarea rows="3" data-b="terms" data-i18n-ph="termsPh"></textarea>
-            </label>
-            <label class="checkline span2"><input type="checkbox" data-b="pdfBreakdown"><span data-i18n="pdfBreakdown">Include my internal cost breakdown in the PDF</span></label>
-          </div>
-        </details>
+        <button type="button" class="btn primary designer-btn" data-open-designer data-i18n="designQuote">🎨 Design your quote</button>
+        <p class="hint" data-i18n="designQuoteHint">Logo, brand name, colours, fonts, layout and what appears on the quote, with a live preview.</p>
       </section>
       <div class="card saved no-print">
         <h3 data-i18n="savedPieces">Saved pieces</h3>
@@ -309,6 +281,7 @@
           <button type="button" class="btn primary" id="saveBtn" data-i18n="save">Save piece</button>
           <button type="button" class="btn" id="pdfBtn" data-i18n="pdf">⬇ PDF quote</button>
           <button type="button" class="btn" id="xlsxBtn" data-i18n="excel">⬇ Excel</button>
+          <button type="button" class="btn" data-open-designer data-i18n="designShort">🎨 Design</button>
           <button type="button" class="btn" id="printBtn" data-i18n="print">Print</button>
           <button type="button" class="btn" id="copyBtn" data-i18n="copy">Copy summary</button>
           <button type="button" class="btn ghost" id="resetBtn" data-i18n="reset">New</button>
@@ -317,6 +290,122 @@
 
     </aside>
   </main>
+
+  <dialog id="designer" class="designer" aria-labelledby="dzTitle">
+    <div class="dz-head">
+      <h2 id="dzTitle" data-i18n="designer">Quote designer</h2>
+      <button type="button" class="icon" id="dzClose" data-i18n-aria="close" aria-label="Close">×</button>
+    </div>
+    <div class="dz-body">
+      <div class="dz-controls">
+        <fieldset>
+          <legend data-i18n="gBrand">Brand</legend>
+          <div class="logo-row">
+            <div class="logo-preview" aria-hidden="true"></div>
+            <div class="row">
+              <label class="btn small"><span data-i18n="uploadLogo">Upload logo</span><input type="file" class="logo-file" accept="image/*" hidden></label>
+              <button type="button" class="btn small ghost logo-remove" data-i18n="removeLogo">Remove</button>
+            </div>
+          </div>
+          <label><span data-i18n="brandName">Brand / studio name</span>
+            <input type="text" data-b="name" dir="auto" data-i18n-ph="brandNamePh"></label>
+          <label><span data-i18n="tagline">Tagline</span>
+            <input type="text" data-b="tagline" dir="auto" data-i18n-ph="taglinePh"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend data-i18n="gLayout">Layout</legend>
+          <div class="tpl-pick" role="radiogroup">
+            <label class="tpl"><input type="radio" name="tpl" value="banner" data-b="template"><span class="tpl-thumb tpl-banner"><i></i><b></b><b></b><b></b></span><span data-i18n="tBanner">Banner</span></label>
+            <label class="tpl"><input type="radio" name="tpl" value="minimal" data-b="template"><span class="tpl-thumb tpl-minimal"><i></i><b></b><b></b><b></b></span><span data-i18n="tMinimal">Minimal</span></label>
+            <label class="tpl"><input type="radio" name="tpl" value="elegant" data-b="template"><span class="tpl-thumb tpl-elegant"><i></i><b></b><b></b><b></b></span><span data-i18n="tElegant">Elegant</span></label>
+          </div>
+          <label><span data-i18n="quoteLang">Quote language</span>
+            <select data-b="quoteLang">
+              <option value="app" data-i18n="lApp">Same as the app</option>
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+              <option value="bi" data-i18n="lBi">Bilingual (English + Arabic)</option>
+            </select></label>
+          <label><span data-i18n="titleText">Document title</span>
+            <input type="text" data-b="titleText" dir="auto" data-i18n-ph="titleTextPh"></label>
+          <label><span data-i18n="logoSize">Logo size</span>
+            <div class="range"><input type="range" min="32" max="160" step="2" data-b="logoSize"><output data-out="logoSize" data-unit="px"></output></div></label>
+          <label class="checkline"><input type="checkbox" data-b="logoBox"><span data-i18n="logoBox">White box behind the logo</span></label>
+          <label><span data-i18n="radius">Corner rounding</span>
+            <div class="range"><input type="range" min="0" max="20" step="1" data-b="radius"><output data-out="radius" data-unit="px"></output></div></label>
+          <label><span data-i18n="textSize">Text size</span>
+            <div class="range"><input type="range" min="11" max="16" step="0.5" data-b="textSize"><output data-out="textSize" data-unit="px"></output></div></label>
+        </fieldset>
+
+        <fieldset>
+          <legend data-i18n="gColours">Colours</legend>
+          <div class="grid">
+            <label><span data-i18n="primaryColor">Main colour</span>
+              <div class="color"><input type="color" data-b="primary"><code data-code="primary"></code></div></label>
+            <label><span data-i18n="accentColor">Accent colour</span>
+              <div class="color"><input type="color" data-b="accent"><code data-code="accent"></code></div></label>
+            <label><span data-i18n="paper">Page colour</span>
+              <div class="color"><input type="color" data-b="paper"><code data-code="paper"></code></div></label>
+            <label><span data-i18n="textColor">Text colour</span>
+              <div class="color"><input type="color" data-b="textColor"><code data-code="textColor"></code></div></label>
+            <label class="span2"><span data-i18n="headerInk">Text on coloured areas</span>
+              <div class="color"><input type="color" id="headerInk" data-b="headerInk">
+                <label class="checkline"><input type="checkbox" data-b="inkAuto"><span data-i18n="autoInk">Automatic (best contrast)</span></label></div></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend data-i18n="gFonts">Fonts</legend>
+          <label><span data-i18n="headFont">Headings</span><select data-b="headFont"></select></label>
+          <label><span data-i18n="bodyFont">Body text</span><select data-b="bodyFont"></select></label>
+          <small data-i18n="fontsHint">Fonts marked عربي include Arabic letters.</small>
+        </fieldset>
+
+        <fieldset>
+          <legend data-i18n="gShow">Show on the quote</legend>
+          <div class="checks">
+            <label class="checkline"><input type="checkbox" data-b="showClient"><span data-i18n="client">Client name</span></label>
+            <label class="checkline"><input type="checkbox" data-b="showTagline"><span data-i18n="tagline">Tagline</span></label>
+            <label class="checkline"><input type="checkbox" data-b="showValidity"><span data-i18n="showValidity">Valid-until date</span></label>
+            <label class="checkline"><input type="checkbox" data-b="showNotes"><span data-i18n="terms">Notes & terms</span></label>
+            <label class="checkline"><input type="checkbox" data-b="showContact"><span data-i18n="showContact">Contact details</span></label>
+            <label class="checkline"><input type="checkbox" data-b="showThanks"><span data-i18n="showThanks">Thank-you line</span></label>
+            <label class="checkline"><input type="checkbox" data-b="pdfBreakdown"><span data-i18n="pdfBreakdown">Internal cost breakdown (PDF)</span></label>
+          </div>
+          <label><span data-i18n="thanksText">Thank-you text</span>
+            <input type="text" data-b="thanksText" dir="auto" data-i18n-ph="qThanks"></label>
+        </fieldset>
+
+        <fieldset>
+          <legend data-i18n="gContact">Contact & terms</legend>
+          <div class="grid">
+            <label><span data-i18n="phone">Phone / WhatsApp</span><input type="text" data-b="phone" dir="ltr"></label>
+            <label><span data-i18n="email">Email</span><input type="text" data-b="email" dir="ltr"></label>
+            <label><span data-i18n="website">Website</span><input type="text" data-b="website" dir="ltr"></label>
+            <label><span data-i18n="instagram">Instagram</span><input type="text" data-b="instagram" dir="ltr"></label>
+          </div>
+          <label><span data-i18n="terms">Notes & terms</span>
+            <textarea rows="3" data-b="terms" dir="auto" data-i18n-ph="termsPh"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend data-i18n="gOther">App</legend>
+          <label class="checkline"><input type="checkbox" data-b="applyToApp"><span data-i18n="applyToApp">Use my logo and colours in this app too</span></label>
+          <button type="button" class="btn small ghost" id="dzReset" data-i18n="resetDesign">Reset design to default</button>
+        </fieldset>
+      </div>
+      <div class="dz-preview">
+        <p class="hint" data-i18n="previewNote">Live preview of the quote for the current piece</p>
+        <div class="dz-sheet-wrap"><div class="dz-sheet" id="dzSheet"></div></div>
+      </div>
+    </div>
+    <div class="dz-foot">
+      <button type="button" class="btn primary" id="dzPdf" data-i18n="pdf">⬇ PDF quote</button>
+      <button type="button" class="btn" id="dzXlsx" data-i18n="excel">⬇ Excel</button>
+      <button type="button" class="btn ghost" id="dzDone" data-i18n="done">Done</button>
+    </div>
+  </dialog>
 
   <footer class="foot no-print" data-i18n="footer">All data stays in your browser.</footer>
 

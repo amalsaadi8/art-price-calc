@@ -157,7 +157,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
 }
 .logo-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .color { display: flex; align-items: center; gap: 10px; }
-.color input { width: 48px; height: 38px; padding: 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--field); cursor: pointer; }
+.color input[type="color"] { width: 48px; height: 38px; padding: 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--field); cursor: pointer; }
 .color code { font-size: 13px; color: var(--ink); }
 textarea { width: 100%; font: inherit; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; resize: vertical; }
 
@@ -186,4 +186,54 @@ textarea { width: 100%; font: inherit; color: var(--ink); background: var(--fiel
   .summary { position: static; max-height: none; overflow: visible; }
   .card { border: 0; padding: 0; }
   .topbar { border: 0; padding: 0 0 16px; }
+}
+
+/* ---------- quote designer ---------- */
+.designer-btn { margin-top: 6px; }
+.designer {
+  width: min(1180px, calc(100vw - 24px)); height: min(860px, calc(100vh - 24px)); max-width: none; max-height: none;
+  padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--ink);
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+.designer[open] { display: flex; flex-direction: column; }
+.designer::backdrop { background: rgba(20, 16, 10, .45); }
+.dz-head, .dz-foot { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.dz-head h2 { font-size: 17px; flex: 1; }
+.dz-foot { border-bottom: 0; border-top: 1px solid var(--line); justify-content: flex-end; }
+.dz-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 380px minmax(0, 1fr); }
+.dz-controls { overflow: auto; padding: 14px 18px 24px; border-inline-end: 1px solid var(--line); display: grid; gap: 14px; align-content: start; }
+.dz-controls fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px 14px; margin: 0; display: grid; gap: 10px; min-width: 0; }
+.dz-controls legend { font-weight: 600; font-size: 14px; color: var(--ink); padding: 0 6px; }
+.dz-controls .grid { margin: 0; }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.color .checkline { font-size: 13px; }
+.dz-preview { overflow: auto; padding: 14px 22px 24px; background: var(--bg); }
+.dz-preview .hint { margin: 0 0 10px; }
+.dz-sheet-wrap { width: 100%; max-width: 794px; margin: 0 auto; }
+.dz-sheet { position: relative; overflow: hidden; direction: ltr; box-shadow: 0 6px 24px rgba(0,0,0,.14); border-radius: 4px; background: #fff; }
+.dz-sheet > .qd { transform-origin: 0 0; position: absolute; top: 0; left: 0; }
+
+.tpl-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tpl { display: grid; gap: 6px; justify-items: center; cursor: pointer; font-size: 12.5px; color: var(--ink); }
+.tpl input { position: absolute; opacity: 0; pointer-events: none; }
+.tpl-thumb {
+  width: 100%; aspect-ratio: 210 / 297; border: 2px solid var(--line); border-radius: 8px; background: #fff;
+  display: flex; flex-direction: column; gap: 5px; padding: 0 0 8px; overflow: hidden;
+}
+.tpl input:checked + .tpl-thumb { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.tpl input:focus-visible + .tpl-thumb { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tpl-thumb i { display: block; height: 26%; }
+.tpl-thumb b { display: block; height: 6px; margin: 0 10px; border-radius: 3px; background: #e6ddcf; }
+.tpl-thumb b:nth-of-type(1) { margin-top: 6px; }
+.tpl-thumb b:nth-of-type(3) { width: 40%; margin-inline-start: auto; background: var(--accent); }
+.tpl-banner i { background: var(--accent); border-bottom: 3px solid var(--gold); }
+.tpl-minimal i { background: linear-gradient(var(--accent), var(--accent)) 10px 70% / 40% 5px no-repeat, #fff; border-bottom: 1px solid var(--gold); margin: 0 6px; }
+.tpl-elegant i { background: radial-gradient(circle at 50% 42%, var(--accent) 0 14%, transparent 15%), #fff; border-bottom: 3px double var(--gold); margin: 0 6px; }
+
+@media (max-width: 860px) {
+  .designer { width: 100vw; height: 100dvh; border-radius: 0; }
+  .dz-body { display: flex; flex-direction: column; overflow: auto; }
+  .dz-preview { order: -1; flex: none; height: 44vh; padding: 10px 12px; }
+  .dz-controls { flex: none; }
+  .dz-controls { border-inline-end: 0; overflow: visible; }
 }
