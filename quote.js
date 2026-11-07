@@ -123,7 +123,7 @@
       root.setProperty('--gold', brand.accent);
     }
     if (on && brand.logo) { mark.innerHTML = `<img src="${brand.logo}" alt="">`; mark.classList.add('has-logo'); }
-    else { mark.textContent = '✒'; mark.classList.remove('has-logo'); }
+    else { mark.innerHTML = '<img src="icons/icon-192.png?v=2" alt="">'; mark.classList.remove('has-logo'); }
     $('#appName').textContent = on && brand.name ? brand.name : t('appTitle');
   }
 

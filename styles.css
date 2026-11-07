@@ -146,7 +146,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
 .saved-list .empty { color: var(--muted); font-size: 13px; border-style: dashed; }
 
 .brand-mark.has-logo { background: #fff; padding: 3px; overflow: hidden; }
-.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.brand-mark:not(.has-logo) { background: #000; overflow: hidden; }
 .brand-box { margin-top: 6px; border: 1px solid var(--line); border-radius: 11px; padding: 0 14px; }
 .brand-box[open] { padding-bottom: 14px; }
 .brand-box summary { cursor: pointer; padding: 11px 0; font-weight: 600; color: var(--ink); }

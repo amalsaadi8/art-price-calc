@@ -6,7 +6,7 @@ const FONT_CACHE = 'artcalc-fonts';
 const SHELL = [
   './', 'index.html', 'styles.css', 'calc.js', 'i18n.js', 'app.js', 'quote.js', 'pwa.js',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
-  'icons/favicon-32.png', 'vendor/jspdf.umd.min.js', 'vendor/exceljs.min.js',
+  'icons/favicon-32.png', 'icons/icon.svg', 'vendor/jspdf.umd.min.js', 'vendor/exceljs.min.js',
 ];
 
 self.addEventListener('install', (e) => {
