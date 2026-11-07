@@ -1,0 +1,9 @@
+{
+  "name": "art-price-calc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Artwork pricing calculator for Arabic calligraphy and paintings",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

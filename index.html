@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Artwork Price Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">✒</span>
+      <div>
+        <h1 data-i18n="appTitle">Artwork Price Calculator</h1>
+        <p class="sub" data-i18n="appSub">Calligraphy & paintings — materials, frame, packaging, delivery</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <label class="compact">
+        <span data-i18n="currency">Currency</span>
+        <select id="currency">
+          <option>SAR</option><option>AED</option><option>KWD</option><option>QAR</option>
+          <option>BHD</option><option>OMR</option><option>EGP</option><option>USD</option>
+          <option>EUR</option><option>GBP</option>
+        </select>
+      </label>
+      <button id="langToggle" class="btn ghost" type="button">العربية</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <form id="form" class="form" autocomplete="off" onsubmit="return false">
+
+      <!-- 1. Artwork -->
+      <section class="card">
+        <h2><span class="step">1</span><span data-i18n="secArtwork">Artwork</span></h2>
+        <div class="grid">
+          <label class="span2"><span data-i18n="pieceName">Piece name</span>
+            <input type="text" data-k="name" data-i18n-ph="pieceNamePh" placeholder="e.g. Bismillah — Thuluth">
+          </label>
+          <label><span data-i18n="medium">Type / medium</span>
+            <select data-k="medium" id="medium">
+              <option value="calligraphy" data-i18n="mCalligraphy">Arabic calligraphy (ink)</option>
+              <option value="oil" data-i18n="mOil">Oil painting</option>
+              <option value="acrylic" data-i18n="mAcrylic">Acrylic painting</option>
+              <option value="watercolor" data-i18n="mWatercolor">Watercolour / gouache</option>
+            </select>
+          </label>
+          <label><span data-i18n="support">Surface</span>
+            <select data-k="support" id="support">
+              <option value="paper" data-i18n="sPaper">Paper</option>
+              <option value="canvas" data-i18n="sCanvas">Canvas</option>
+              <option value="panel" data-i18n="sPanel">Wood panel</option>
+            </select>
+          </label>
+          <label><span data-i18n="width">Width</span>
+            <div class="unit"><input type="number" min="0" step="0.5" data-k="width"><em>cm</em></div>
+          </label>
+          <label><span data-i18n="height">Height</span>
+            <div class="unit"><input type="number" min="0" step="0.5" data-k="height"><em>cm</em></div>
+          </label>
+        </div>
+        <button type="button" class="btn small ghost" id="loadPreset" data-i18n="loadPreset">↺ Load typical materials for this type</button>
+      </section>
+
+      <!-- 2. Materials -->
+      <section class="card">
+        <h2><span class="step">2</span><span data-i18n="secMaterials">Consumables & materials</span></h2>
+        <p class="hint" data-i18n="materialsHint">Paper, ink, paint, gold leaf, canvas, varnish, brush/qalam wear… enter the cost actually used for this piece.</p>
+        <div class="items" data-list="materials"></div>
+        <button type="button" class="btn small" data-add="materials" data-i18n="addItem">+ Add item</button>
+      </section>
+
+      <!-- 3. Time -->
+      <section class="card">
+        <h2><span class="step">3</span><span data-i18n="secLabor">Your time</span></h2>
+        <div class="grid">
+          <label><span data-i18n="hours">Hours spent</span>
+            <input type="number" min="0" step="0.25" data-k="hours">
+          </label>
+          <label><span data-i18n="hourlyRate">Hourly rate</span>
+            <div class="unit"><input type="number" min="0" step="1" data-k="hourlyRate"><em class="cur"></em></div>
+          </label>
+          <label class="span2"><span data-i18n="overhead">Studio overhead for this piece</span>
+            <div class="unit"><input type="number" min="0" step="1" data-k="overhead"><em class="cur"></em></div>
+            <small data-i18n="overheadHint">Share of rent, electricity, tools, photography, marketing.</small>
+          </label>
+        </div>
+      </section>
+
+      <!-- 4. Frame -->
+      <section class="card">
+        <h2><span class="step">4</span><span data-i18n="secFrame">Frame</span>
+          <label class="switch"><input type="checkbox" data-k="framed"><span data-i18n="framed">Framed</span></label>
+        </h2>
+        <div data-show="framed">
+          <div class="seg" role="radiogroup">
+            <label><input type="radio" name="frameMode" value="calc" data-k="frame.mode"><span data-i18n="frameCalc">Calculate from size</span></label>
+            <label><input type="radio" name="frameMode" value="fixed" data-k="frame.mode"><span data-i18n="frameFixed">Framer's quote</span></label>
+          </div>
+          <div data-show="frame.mode=fixed" class="grid">
+            <label class="span2"><span data-i18n="frameQuote">Total frame cost</span>
+              <div class="unit"><input type="number" min="0" step="1" data-k="frame.fixedCost"><em class="cur"></em></div>
+            </label>
+          </div>
+          <div data-show="frame.mode=calc" class="grid">
+            <label><span data-i18n="mouldingPerM">Moulding price / metre</span>
+              <div class="unit"><input type="number" min="0" step="0.5" data-k="frame.mouldingPerM"><em class="cur"></em></div>
+            </label>
+            <label><span data-i18n="mouldingWidth">Moulding width</span>
+              <div class="unit"><input type="number" min="0" step="0.5" data-k="frame.mouldingWidth"><em>cm</em></div>
+            </label>
+            <label><span data-i18n="glazing">Glazing</span>
+              <select data-k="frame.glazing">
+                <option value="none" data-i18n="gNone">None</option>
+                <option value="glass" data-i18n="gGlass">Glass</option>
+                <option value="acrylic" data-i18n="gAcrylic">Acrylic (Perspex)</option>
+                <option value="museum" data-i18n="gMuseum">Museum / UV glass</option>
+              </select>
+            </label>
+            <label data-show="frame.glazing!=none"><span data-i18n="glazingPerM2">Glazing price / m²</span>
+              <div class="unit"><input type="number" min="0" step="1" data-k="frame.glazingPerM2"><em class="cur"></em></div>
+            </label>
+            <label class="checkline span2"><input type="checkbox" data-k="frame.mat"><span data-i18n="mat">Mat / passe-partout</span></label>
+            <label data-show="frame.mat"><span data-i18n="matWidth">Mat border width</span>
+              <div class="unit"><input type="number" min="0" step="0.5" data-k="frame.matWidth"><em>cm</em></div>
+            </label>
+            <label data-show="frame.mat"><span data-i18n="matPerM2">Mat board price / m²</span>
+              <div class="unit"><input type="number" min="0" step="1" data-k="frame.matPerM2"><em class="cur"></em></div>
+            </label>
+            <label><span data-i18n="backingPerM2">Backing board / m²</span>
+              <div class="unit"><input type="number" min="0" step="1" data-k="frame.backingPerM2"><em class="cur"></em></div>
+            </label>
+            <label><span data-i18n="fittingCost">Fitting, hangers & labour</span>
+              <div class="unit"><input type="number" min="0" step="1" data-k="frame.fittingCost"><em class="cur"></em></div>
+            </label>
+            <label><span data-i18n="wastePct">Moulding waste</span>
+              <div class="unit"><input type="number" min="0" step="1" data-k="frame.wastePct"><em>%</em></div>
+            </label>
+            <div class="frame-out span2" id="frameOut"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Packaging -->
+      <section class="card">
+        <h2><span class="step">5</span><span data-i18n="secPackaging">Packaging</span></h2>
+        <div class="items" data-list="packaging"></div>
+        <button type="button" class="btn small" data-add="packaging" data-i18n="addItem">+ Add item</button>
+      </section>
+
+      <!-- 6. Delivery -->
+      <section class="card">
+        <h2><span class="step">6</span><span data-i18n="secDelivery">Delivery</span></h2>
+        <div class="seg" role="radiogroup">
+          <label><input type="radio" name="shipMode" value="separate" data-k="shippingMode"><span data-i18n="shipSeparate">Charge buyer separately</span></label>
+          <label><input type="radio" name="shipMode" value="included" data-k="shippingMode"><span data-i18n="shipIncluded">Free shipping (in price)</span></label>
+        </div>
+        <div class="grid">
+          <label><span data-i18n="deliveryCost">Courier / delivery cost</span>
+            <div class="unit"><input type="number" min="0" step="1" data-k="deliveryCost"><em class="cur"></em></div>
+          </label>
+          <label><span data-i18n="insurancePct">Transit insurance</span>
+            <div class="unit"><input type="number" min="0" step="0.1" data-k="insurancePct"><em data-i18n="ofPrice">% of price</em></div>
+          </label>
+        </div>
+      </section>
+
+      <!-- 7. Pricing -->
+      <section class="card">
+        <h2><span class="step">7</span><span data-i18n="secPricing">Pricing strategy</span></h2>
+        <div class="seg three" role="radiogroup">
+          <label><input type="radio" name="method" value="higher" data-k="method"><span data-i18n="methodHigher">Higher of both</span></label>
+          <label><input type="radio" name="method" value="cost" data-k="method"><span data-i18n="methodCost">Cost + profit</span></label>
+          <label><input type="radio" name="method" value="size" data-k="method"><span data-i18n="methodSize">By size</span></label>
+        </div>
+        <div class="grid">
+          <label data-show="method!=size"><span data-i18n="markupPct">Profit markup on cost</span>
+            <div class="unit"><input type="number" min="0" step="5" data-k="markupPct"><em>%</em></div>
+          </label>
+          <label data-show="method!=cost"><span data-i18n="sizeMode">Size formula</span>
+            <select data-k="sizeMode">
+              <option value="area" data-i18n="sizeArea">Per cm² (width × height)</option>
+              <option value="linear" data-i18n="sizeLinear">Per linear cm (width + height)</option>
+            </select>
+          </label>
+          <label data-show="method!=cost"><span data-i18n="sizeRate">Size rate</span>
+            <div class="unit"><input type="number" min="0" step="0.01" data-k="sizeRate"><em class="cur" data-suffix-size></em></div>
+          </label>
+          <label data-show="method!=cost"><span data-i18n="complexity">Complexity / reputation</span>
+            <div class="range">
+              <input type="range" min="0.5" max="3" step="0.05" data-k="complexity">
+              <output id="complexityOut">×1.00</output>
+            </div>
+          </label>
+          <label><span data-i18n="minimumPrice">Minimum price (floor)</span>
+            <div class="unit"><input type="number" min="0" step="1" data-k="minimumPrice"><em class="cur"></em></div>
+          </label>
+        </div>
+      </section>
+
+      <!-- 8. Sales channel -->
+      <section class="card">
+        <h2><span class="step">8</span><span data-i18n="secChannel">Sales channel & tax</span></h2>
+        <div class="grid">
+          <label><span data-i18n="commissionPct">Gallery / platform commission</span>
+            <div class="unit"><input type="number" min="0" max="95" step="1" data-k="commissionPct"><em>%</em></div>
+          </label>
+          <label><span data-i18n="paymentFeePct">Payment / card fees</span>
+            <div class="unit"><input type="number" min="0" step="0.1" data-k="paymentFeePct"><em>%</em></div>
+          </label>
+          <label><span data-i18n="vatPct">VAT</span>
+            <div class="unit"><input type="number" min="0" step="0.5" data-k="vatPct"><em>%</em></div>
+          </label>
+          <label><span data-i18n="roundTo">Round price up to</span>
+            <select data-k="roundTo">
+              <option value="0" data-i18n="noRound">No rounding</option>
+              <option value="1">1</option><option value="5">5</option><option value="10">10</option>
+              <option value="25">25</option><option value="50">50</option><option value="100">100</option>
+            </select>
+          </label>
+        </div>
+      </section>
+      <div class="card saved no-print">
+        <h3 data-i18n="savedPieces">Saved pieces</h3>
+        <ul id="savedList" class="saved-list"></ul>
+        <div class="row">
+          <button type="button" class="btn small ghost" id="exportBtn" data-i18n="export">Export all</button>
+          <label class="btn small ghost"><span data-i18n="import">Import</span><input type="file" id="importFile" accept="application/json" hidden></label>
+        </div>
+      </div>
+    </form>
+
+    <!-- Summary -->
+    <aside class="summary" id="summary">
+      <div class="card result">
+        <p class="print-only" id="printMeta"></p>
+        <p class="label" data-i18n="suggestedPrice">Suggested price</p>
+        <p class="price" id="outPrice">—</p>
+        <p class="price-sub" id="outPriceSub"></p>
+        <div id="warnings"></div>
+
+        <h3 data-i18n="costBreakdown">Cost breakdown</h3>
+        <div class="bar" id="costBar" aria-hidden="true"></div>
+        <table class="tbl" id="costTable"></table>
+
+        <h3 data-i18n="whereMoneyGoes">Where the price goes</h3>
+        <table class="tbl" id="splitTable"></table>
+
+        <h3 data-i18n="methodsCompare">Methods compared</h3>
+        <table class="tbl" id="methodTable"></table>
+
+        <div class="kpis" id="kpis"></div>
+        <div class="row actions no-print">
+          <button type="button" class="btn primary" id="saveBtn" data-i18n="save">Save piece</button>
+          <button type="button" class="btn" id="printBtn" data-i18n="print">Print quote</button>
+          <button type="button" class="btn" id="copyBtn" data-i18n="copy">Copy summary</button>
+          <button type="button" class="btn ghost" id="resetBtn" data-i18n="reset">New</button>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <footer class="foot no-print" data-i18n="footer">All data stays in your browser.</footer>
+
+  <script src="calc.js"></script>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
