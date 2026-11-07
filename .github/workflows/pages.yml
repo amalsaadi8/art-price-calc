@@ -26,8 +26,9 @@ jobs:
       - name: Collect site files
         run: |
           mkdir _site
-          cp index.html styles.css calc.js i18n.js app.js quote.js _site/
-          cp -r vendor _site/
+          cp index.html styles.css calc.js i18n.js app.js quote.js pwa.js sw.js manifest.webmanifest _site/
+          cp -r vendor icons _site/
+          sed -i "s/__VERSION__/${GITHUB_SHA::8}/" _site/sw.js
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

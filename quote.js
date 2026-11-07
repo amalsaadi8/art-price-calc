@@ -501,7 +501,7 @@
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
     pdf.setProperties({ title: `${q.docTitle} ${q.quoteNo}`, author: brand.name || '', creator: 'Artwork Price Calculator' });
     pages.forEach((src, i) => { if (i) pdf.addPage(); pdf.addImage(src, 'JPEG', 0, 0, 210, 297); });
-    pdf.save(q.filename + '.pdf');
+    await window.ArtShare.deliver(pdf.output('blob'), q.filename + '.pdf');
   }
 
   /** Fallback: the browser's print dialog, where "Save as PDF" is available everywhere. */
@@ -707,10 +707,7 @@
 
     const buf = await wb.xlsx.writeBuffer();
     const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = q.filename + '.xlsx';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    await window.ArtShare.deliver(blob, q.filename + '.xlsx');
   }
 
   // expose for tests

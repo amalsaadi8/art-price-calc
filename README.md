@@ -6,6 +6,13 @@ A pricing calculator for **Arabic calligraphy on paper (framed)** and **oil, acr
 
 Open `index.html` in any browser, or use the hosted version on GitHub Pages: **https://amalsaadi8.github.io/art-price-calc/**
 
+### Install it on your phone (works offline)
+
+- **iPhone / iPad:** open the site in **Safari**, tap **Share ⬆︎**, then **Add to Home Screen**. The in-app **⬇ Install app** button shows these steps.
+- **Android (Chrome):** tap **⬇ Install app** in the top bar, or use the browser menu, then **Install app**.
+
+Once installed, it opens full-screen from your home screen and works without internet. Your pieces and brand settings stay on the device. On a phone, **PDF quote** and **Excel** open the share sheet, so you can send the file straight to WhatsApp or Mail, or save it to Files.
+
 The `.github/workflows/pages.yml` workflow runs the tests and publishes the site on every push. To turn it on once, go to **Settings → Pages → Build and deployment → Source: GitHub Actions**. (Pages on a private repository needs a paid GitHub plan; on a free plan, make the repository public first.)
 
 ## What it accounts for

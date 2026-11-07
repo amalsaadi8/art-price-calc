@@ -7,6 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#8a5a2b">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Art Pricing">
 </head>
 <body>
   <header class="topbar">
@@ -26,6 +33,7 @@
           <option>EUR</option><option>GBP</option>
         </select>
       </label>
+      <button id="installBtn" class="btn primary" type="button" hidden data-i18n="installApp">⬇ Install app</button>
       <button id="langToggle" class="btn ghost" type="button">العربية</button>
     </div>
   </header>
@@ -407,11 +415,30 @@
     </div>
   </dialog>
 
+  <dialog id="installHelp" class="small-dialog" aria-labelledby="installHelpTitle">
+    <h2 id="installHelpTitle" data-i18n="installTitle">Install on your iPhone / iPad</h2>
+    <ol>
+      <li data-i18n="iosStep1">Open this page in Safari.</li>
+      <li data-i18n="iosStep2">Tap the Share button (the square with an arrow ⬆︎).</li>
+      <li data-i18n="iosStep3">Choose "Add to Home Screen", then "Add".</li>
+    </ol>
+    <p class="hint" data-i18n="installNote">The app opens full-screen from your home screen and works offline.</p>
+    <div class="row"><button type="button" class="btn primary" id="installHelpClose" data-i18n="done">Done</button></div>
+  </dialog>
+
+  <div id="readyBar" class="ready-bar" role="status" hidden>
+    <div><strong data-i18n="fileReady">Your file is ready</strong><small id="readyName"></small></div>
+    <button type="button" class="btn primary small" id="readyShare" data-i18n="share">Share / Save</button>
+    <button type="button" class="btn small" id="readyDownload" data-i18n="downloadBtn">Download</button>
+    <button type="button" class="icon" id="readyClose" data-i18n-aria="close" aria-label="Close">×</button>
+  </div>
+
   <footer class="foot no-print" data-i18n="footer">All data stays in your browser.</footer>
 
   <script src="calc.js"></script>
   <script src="i18n.js"></script>
   <script src="app.js"></script>
   <script src="quote.js"></script>
+  <script src="pwa.js"></script>
 </body>
 </html>

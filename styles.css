@@ -237,3 +237,23 @@ textarea { width: 100%; font: inherit; color: var(--ink); background: var(--fiel
   .dz-controls { flex: none; }
   .dz-controls { border-inline-end: 0; overflow: visible; }
 }
+
+/* ---------- install help + "file ready" bar ---------- */
+.small-dialog {
+  width: min(420px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: 16px;
+  background: var(--card); color: var(--ink); padding: 20px 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+.small-dialog::backdrop { background: rgba(20, 16, 10, .45); }
+.small-dialog h2 { font-size: 17px; margin-bottom: 10px; }
+.small-dialog ol { padding-inline-start: 20px; margin: 0 0 10px; display: grid; gap: 6px; }
+.ready-bar {
+  position: fixed; z-index: 50; inset-inline: 12px; bottom: calc(12px + env(safe-area-inset-bottom));
+  max-width: 560px; margin-inline: auto; display: flex; align-items: center; gap: 8px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+.ready-bar > div { flex: 1; min-width: 0; display: grid; }
+.ready-bar small { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (display-mode: standalone) {
+  .topbar { padding-top: max(14px, env(safe-area-inset-top)); }
+}
